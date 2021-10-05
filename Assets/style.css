@@ -8,10 +8,16 @@ h1 {
 .input-group {
     margin-bottom: 15px;
 }
-.header-style {
+.navbar {
     font-size: 40px;
     color: #ffffff;
     text-align: center;
+    background-color:rgb(3, 135, 187);
+    background-image:
+    linear-gradient(
+    to right, 
+    rgb(3, 135, 187), blue
+    );
 }
 .card {
     width:100%;
