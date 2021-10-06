@@ -27,7 +27,7 @@ var mainContainer = $(".card-body");
 getItems();
 // main card
 function getData() {
-    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=6a7afcc840d3e1020b68003a1927f9e9"
+    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=6a7afcc840d3e1020b68003a1927f9e9&units=imperial"
     // this make sure that the main container is empty
     mainContainer.empty();
     // this makes sure that the 5 day forcast isempty
@@ -47,8 +47,8 @@ function getData() {
     //   appends information onto main container
         mainContainer.append($("<img>").attr("src", iconURL));
         // converts K and removes decimals using Math.round
-        var temp = Math.round((response.main.temp - 273.15) * 1.80 + 32);
-        mainContainer.append($("<p>").html("Temperature: " + temp + " &#8457"));
+        var temp = response.main.temp;
+        mainContainer.append($("<p>").html("Temperature: " + temp + " °F"));
         var humidity = response.main.humidity;
         mainContainer.append($("<p>").html("Humidity: " + humidity));
         var windSpeed = response.wind.speed;
@@ -76,6 +76,7 @@ function getData() {
         })
         
         // another call for the 5-day (forecast)
+        
         $.ajax({
             url: "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=6a7afcc840d3e1020b68003a1927f9e9&units=imperial",
             method: "GET"
@@ -96,7 +97,7 @@ function getData() {
                 weekContainers.append($("<img>").attr("src", iconURL));
                 // temperature in farenheigh coverted
                 var temp = response.list[i * 8].main.temp;
-                weekContainers.append($("<p>").html("Temp: " + temp + " &#8457"));
+                weekContainers.append($("<p>").html("Temp: " + temp + " °F"));
                 // var humidity to appened to list
                 var humidity = response.list[i * 8].main.humidity;
                 weekContainers.append($("<p>").html("Humidity: " + humidity));
