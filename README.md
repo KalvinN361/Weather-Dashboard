@@ -6,4 +6,4 @@
 ## ## Project Live Website
 The weather dashboard can be found [here](https://kalvinn361.github.io/Weather-Dashboard/#)
 
-![Screenshot](Work-calander.png)
+![Screenshot](weather.png)
