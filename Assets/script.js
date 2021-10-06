@@ -56,3 +56,77 @@ function getData() {
         // var to use for uv index
         var lat = response.coord.lat;
         var lon = response.coord.lon;
+        // call for uv index needs a lat a long
+        $.ajax({
+            url: "https://api.openweathermap.org/data/2.5/uvi?appid=6a7afcc840d3e1020b68003a1927f9e9&lat=" + lat + "&lon=" + lon,
+            method: "GET"
+        // uv along with btn warning for response. 
+        }).then(function (response) {
+            mainContainer.append($("<p>").html("UV Index: <span>" + response.value + "</span>"));
+            // 
+            if (response.value <= 2) {
+                $("span").attr("class", "btn btn-outline-success");
+            };
+            if (response.value > 2 && response.value <= 5) {
+                $("span").attr("class", "btn btn-outline-warning");
+            };
+            if (response.value > 5) {
+                $("span").attr("class", "btn btn-outline-danger");
+            };
+        })
+        
+        // another call for the 5-day (forecast)
+        $.ajax({
+            url: "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=6a7afcc840d3e1020b68003a1927f9e9&units=imperial",
+            method: "GET"
+        // displays 5 separate columns from the forecast response
+        }).then(function (response) {
+            for (i = 0; i < 5; i++) {
+                // creates the columns
+                var weekContainers = $("<div>").attr("class", "col fiveDay bg-primary text-white rounded-lg p-2");
+                $("#weeklyForecast").append(weekContainers);
+                // uses moment for the date
+                var myDate = new Date(response.list[i * 8].dt * 1000);
+                // displays date
+                weekContainers.append($("<h4>").html(myDate.toLocaleDateString()));
+                // variable to put into api search 
+                var iconCode = response.list[i * 8].weather[0].icon;
+                // icons added to each card of week 
+                var iconURL = "http://openweathermap.org/img/w/" + iconCode + ".png";
+                weekContainers.append($("<img>").attr("src", iconURL));
+                // temperature in farenheigh coverted
+                var temp = response.list[i * 8].main.temp;
+                weekContainers.append($("<p>").html("Temp: " + temp + " &#8457"));
+                // var humidity to appened to list
+                var humidity = response.list[i * 8].main.humidity;
+                weekContainers.append($("<p>").html("Humidity: " + humidity));
+            }
+        })
+    })
+};
+// searches and adds to history
+$("#searchCity").click(function() {
+    city = $("#city").val();
+    getData();
+    var checkArray = searchHistory.includes(city);
+    if (checkArray == true) {
+        return
+    }
+    else {
+        searchHistory.push(city);
+        localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+        var cityListButton = $("<a>").attr({
+            // list-group-item-action keeps the search history buttons consistent
+            class: "list-group-item list-group-item-action",
+            href: "#"
+        });
+        cityListButton.text(city);
+        $(".list-group").append(cityListButton);
+    };
+});
+// listens for action on the history buttons
+$(".list-group-item").click(function() {
+    city = $(this).text();
+    getData();
+});
+
